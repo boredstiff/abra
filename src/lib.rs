@@ -44,7 +44,9 @@ pub struct Expression {
 impl Expression {
     pub fn new(s: &str) -> (&str, Self) {
         let (s, left) = Number::new(s);
+        let (s, _) = utils::extract_whitespace(s);
         let (s, operation) = Operation::new(s);
+        let (s, _) = utils::extract_whitespace(s);
         let (s, right) = Number::new(s);
         (s, Self { left, right, operation })
     }
@@ -91,5 +93,20 @@ mod tests {
                 },
             ),
         );
+    }
+
+    #[test]
+    fn parse_expr_with_whitespace() {
+        assert_eq!(
+            Expression::new("2 * 2"),
+            (
+                "",
+                Expression {
+                    left: Number(2),
+                    right: Number(2),
+                    operation: Operation::Multiply,
+                }
+            )
+        )
     }
 }
